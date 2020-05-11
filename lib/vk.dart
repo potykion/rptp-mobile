@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'vk.g.dart';
 
@@ -362,4 +363,42 @@ class VKVideoCard extends StatelessWidget {
           onTap: () => launch(video.url),
         ),
       );
+}
+
+class VKVideoQueryInput extends StatefulWidget {
+  final String initialQuery;
+
+  const VKVideoQueryInput({Key key, this.initialQuery}) : super(key: key);
+
+  @override
+  _VKVideoQueryInputState createState() => _VKVideoQueryInputState();
+}
+
+class _VKVideoQueryInputState extends State<VKVideoQueryInput> {
+  TextEditingController controller = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    controller.text = widget.initialQuery;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+          border: InputBorder.none,
+          suffixIcon: IconButton(
+            icon: Icon(
+              Icons.search,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              context.bloc<VKBloc>().add(VKVideoSearchStarted(controller.text));
+              FocusScope.of(context).requestFocus(new FocusNode());
+            },
+          )),
+    );
+  }
 }

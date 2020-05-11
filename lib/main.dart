@@ -17,6 +17,8 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primaryColor: Colors.pink[100],
             accentColor: Colors.pink[100],
+            cursorColor: Colors.black,
+            textSelectionHandleColor: Colors.black,
           ),
         ),
         providers: [
@@ -30,12 +32,12 @@ class VideosPage extends StatelessWidget {
   Widget build(BuildContext context) => BlocBuilder<VKBloc, VKState>(
         builder: (context, state) => Scaffold(
           appBar: AppBar(
-            title: Text(
-              state.accessToken == null
-                  ? "Для начала войди в ВК"
-                  : state.videoQuery ?? 'Нажми "Загрузить видео"',
-            ),
-            centerTitle: true,
+            title: state.accessToken == null
+                ? Text("Для начала войди в ВК")
+                : state.videoQuery == null
+                    ? Text('Нажми "Загрузить видео"')
+                    : VKVideoQueryInput(initialQuery: state.videoQuery),
+//            centerTitle: true,
           ),
           body: state.accessToken != null
               ? buildVideoListView()
@@ -68,20 +70,18 @@ class VideosPage extends StatelessWidget {
 
   Widget buildVideoListView() => BlocBuilder<VKBloc, VKState>(
         builder: (context, state) => OrientationBuilder(
-          builder: (context, orientation) =>
-              orientation == Orientation.portrait
-                  ? ListView.builder(
-                      itemBuilder: (context, index) =>
-                          VKVideoCard(video: state.videos[index]),
-                      itemCount: state.videos.length,
-                    )
-                  : GridView.count(
-                      crossAxisCount: 2,
-                      childAspectRatio: 1.75,
-                      children: state.videos
-                          .map((v) => VKVideoCard(video: v))
-                          .toList(),
-                    ),
+          builder: (context, orientation) => orientation == Orientation.portrait
+              ? ListView.builder(
+                  itemBuilder: (context, index) =>
+                      VKVideoCard(video: state.videos[index]),
+                  itemCount: state.videos.length,
+                )
+              : GridView.count(
+                  crossAxisCount: 2,
+                  childAspectRatio: 1.75,
+                  children:
+                      state.videos.map((v) => VKVideoCard(video: v)).toList(),
+                ),
         ),
       );
 }
