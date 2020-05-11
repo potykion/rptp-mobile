@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:provider/provider.dart';
 import 'package:rptpmobile/vk.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 void main() async {
   await DotEnv().load('.env');
@@ -11,18 +11,18 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider<VKBloc>(
-      create: (BuildContext context) => VKBloc(),
-      child: MaterialApp(
-        home: MyHomePage(),
-        theme: ThemeData(
-          primaryColor: Colors.pink[100],
-          accentColor: Colors.pink[100],
+  Widget build(context) => MultiProvider(
+        child: MaterialApp(
+          home: MyHomePage(),
+          theme: ThemeData(
+            primaryColor: Colors.pink[100],
+            accentColor: Colors.pink[100],
+          ),
         ),
-      ),
-    );
-  }
+        providers: [
+          BlocProvider<VKBloc>(create: (context) => VKBloc()),
+        ],
+      );
 }
 
 class MyHomePage extends StatefulWidget {
@@ -34,11 +34,13 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<VKBloc, VKState>(
-      builder: (BuildContext context, VKState state) => Scaffold(
+      builder: (context, state) => Scaffold(
         appBar: AppBar(
-          title: Text(state.accessToken == null
-              ? "Для начала войди в ВК"
-              : state.videoQuery ?? 'Нажми "Загрузить видео"'),
+          title: Text(
+            state.accessToken == null
+                ? "Для начала войди в ВК"
+                : state.videoQuery ?? 'Нажми "Загрузить видео"',
+          ),
           centerTitle: true,
         ),
         body: state.accessToken != null
@@ -57,7 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget buildVKAuthButton() => Builder(
-        builder: (BuildContext context) => Center(
+        builder: (context) => Center(
           child: RaisedButton(
             child: Text("Войти в ВК"),
             onPressed: () async {
@@ -71,31 +73,24 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       );
 
-  Widget buildVideoListView() => Column(
-        children: <Widget>[
-          BlocBuilder<VKBloc, VKState>(
-            builder: (BuildContext context, VKState state) => Flexible(
-              child: OrientationBuilder(
-                builder: (BuildContext context, Orientation orientation) {
-                  return orientation == Orientation.portrait
-                      ? ListView.builder(
-                          itemBuilder: (context, index) =>
-                              VKVideoCard(video: state.videos[index]),
-                          itemCount: state.videos.length,
-                        )
-                      : GridView.count(
-                          crossAxisCount: 2,
-                          childAspectRatio: 1.75,
-//                    crossAxisCount: 3,
-//                    childAspectRatio: 1.74,
-                          children: state.videos
-                              .map((v) => VKVideoCard(video: v))
-                              .toList(),
-                        );
-                },
-              ),
-            ),
-          )
-        ],
+  Widget buildVideoListView() => BlocBuilder<VKBloc, VKState>(
+        builder: (context, state) => Flexible(
+          child: OrientationBuilder(
+            builder: (context, orientation) =>
+                orientation == Orientation.portrait
+                    ? ListView.builder(
+                        itemBuilder: (context, index) =>
+                            VKVideoCard(video: state.videos[index]),
+                        itemCount: state.videos.length,
+                      )
+                    : GridView.count(
+                        crossAxisCount: 2,
+                        childAspectRatio: 1.75,
+                        children: state.videos
+                            .map((v) => VKVideoCard(video: v))
+                            .toList(),
+                      ),
+          ),
+        ),
       );
 }

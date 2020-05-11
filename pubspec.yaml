@@ -42,6 +42,10 @@ dependencies:
   # Форматирование даты
   intl: ^0.16.1
 
+  # di
+  provider: ^4.1.1
+
+
 
 dev_dependencies:
   # моки
