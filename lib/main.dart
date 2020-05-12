@@ -70,23 +70,28 @@ class VideosPage extends StatelessWidget {
   Widget buildVideoListView() => BlocBuilder<VKBloc, VKState>(
         builder: (context, state) =>
             state.loadingStatus == LoadingStatus.finished
-                ? OrientationBuilder(
-                    builder: (context, orientation) =>
-                        orientation == Orientation.portrait
-                            ? ListView.builder(
-                                itemBuilder: (context, index) =>
-                                    VKVideoCard(video: state.videos[index]),
-                                itemCount: state.videos.length,
-                              )
-                            : GridView.count(
-                                crossAxisCount: 2,
-                                childAspectRatio: 1.75,
-                                children: state.videos
-                                    .map((v) => VKVideoCard(video: v))
-                                    .toList(),
-                              ),
-                  )
+                ? VKVideosGrid(videos: state.videos)
                 : Center(child: CircularProgressIndicator()),
+      );
+}
+
+class VKVideosGrid extends StatelessWidget {
+  final List<VKVideo> videos;
+
+  const VKVideosGrid({Key key, this.videos}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) => OrientationBuilder(
+        builder: (_, orientation) => orientation == Orientation.portrait
+            ? ListView.builder(
+                itemBuilder: (_, index) => VKVideoCard(video: videos[index]),
+                itemCount: videos.length,
+              )
+            : GridView.count(
+                crossAxisCount: 2,
+                childAspectRatio: 1.75,
+                children: videos.map((v) => VKVideoCard(video: v)).toList(),
+              ),
       );
 }
 
