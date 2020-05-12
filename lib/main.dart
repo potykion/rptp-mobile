@@ -45,7 +45,7 @@ class VideosPage extends StatelessWidget {
               ? FloatingActionButton(
                   onPressed: () => context
                       .bloc<VKBloc>()
-                      .add(VKVideoSearchStarted("riley reid")),
+                      .add(VKVideoSearchStarted(state.videoQuery)),
                   child: Icon(Icons.autorenew),
                 )
               : null,
@@ -68,20 +68,25 @@ class VideosPage extends StatelessWidget {
       );
 
   Widget buildVideoListView() => BlocBuilder<VKBloc, VKState>(
-        builder: (context, state) => OrientationBuilder(
-          builder: (context, orientation) => orientation == Orientation.portrait
-              ? ListView.builder(
-                  itemBuilder: (context, index) =>
-                      VKVideoCard(video: state.videos[index]),
-                  itemCount: state.videos.length,
-                )
-              : GridView.count(
-                  crossAxisCount: 2,
-                  childAspectRatio: 1.75,
-                  children:
-                      state.videos.map((v) => VKVideoCard(video: v)).toList(),
-                ),
-        ),
+        builder: (context, state) =>
+            state.loadingStatus == LoadingStatus.finished
+                ? OrientationBuilder(
+                    builder: (context, orientation) =>
+                        orientation == Orientation.portrait
+                            ? ListView.builder(
+                                itemBuilder: (context, index) =>
+                                    VKVideoCard(video: state.videos[index]),
+                                itemCount: state.videos.length,
+                              )
+                            : GridView.count(
+                                crossAxisCount: 2,
+                                childAspectRatio: 1.75,
+                                children: state.videos
+                                    .map((v) => VKVideoCard(video: v))
+                                    .toList(),
+                              ),
+                  )
+                : Center(child: CircularProgressIndicator()),
       );
 }
 

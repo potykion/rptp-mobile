@@ -301,14 +301,21 @@ class VKVideoSearchStarted extends VKEvent {
   VKVideoSearchStarted(this.query);
 }
 
+enum LoadingStatus {
+  started, finished
+}
+
 class VKState {
+  LoadingStatus loadingStatus;
+
   String accessToken;
 
   String videoQuery;
   List<VKVideo> videos;
 
-  VKState({this.accessToken, this.videoQuery, videos})
-      : this.videos = videos ?? [];
+  VKState({this.accessToken, this.videoQuery, videos, loadingStatus})
+      : this.videos = videos ?? [],
+        this.loadingStatus = loadingStatus ?? LoadingStatus.finished;
 
   get apiClient =>
       accessToken != null ? VKApiClient(accessToken: accessToken) : null;
@@ -317,10 +324,11 @@ class VKState {
       ? AdultVKVideoSearch(VKVideoSearch(apiClient: apiClient))
       : null;
 
-  copyWith({accessToken, videoQuery, videos}) => VKState(
+  copyWith({accessToken, videoQuery, videos, loadingStatus}) => VKState(
         accessToken: accessToken ?? this.accessToken,
         videoQuery: videoQuery ?? this.videoQuery,
         videos: videos ?? this.videos,
+        loadingStatus: loadingStatus ?? this.loadingStatus,
       );
 }
 
@@ -333,8 +341,9 @@ class VKBloc extends Bloc<VKEvent, VKState> {
     if (event is VKAccessTokenSetEvent) {
       yield state.copyWith(accessToken: event.accessToken);
     } else if (event is VKVideoSearchStarted) {
+      yield state.copyWith(loadingStatus: LoadingStatus.started);
       var videos = await state.videoSearch.search(event.query);
-      yield state.copyWith(videoQuery: event.query, videos: videos);
+      yield state.copyWith(videoQuery: event.query, videos: videos, loadingStatus: LoadingStatus.finished);
     }
   }
 }
