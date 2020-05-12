@@ -48,11 +48,47 @@ void main() {
       ).search("riley reid");
 
       expect(videos.first.url, "https://vk.com/video-49411171_456239097");
-      expect(videos.first.imageMoreThan600px, "https://sun9-6.userapi.com/c840521/v840521507/27118/bmtXJx0FKTY.jpg");
+      expect(videos.first.imageMoreThan600px,
+          "https://sun9-6.userapi.com/c840521/v840521507/27118/bmtXJx0FKTY.jpg");
       expect(videos.first.likesCount, 8344);
       expect(videos.first.date, DateTime(2017, 11, 24, 9, 48, 52));
       expect(videos.first.durationString, "00:27:44");
+    });
 
+    test("VKVideoSearch кидает ошибку при неправльном токене", () async {
+      var mockUrl =
+          "https://api.vk.com/method/video.search?access_token=4d63da13466b3cb399dca9cbb072eab6cfa7c54ba80622ec4bf91fcb29190fb9417dab58ff252679d5c2d&v=5.103&q=riley+reid&sort=0&hd=1&adult=1&count=200";
+      var mockBody =
+          await File('test_data/vk_token_expired.json').readAsString();
+      var mockHttpClient = MockHttpClient();
+      when(mockHttpClient.get(mockUrl)).thenAnswer(
+        (_) async => http.Response(
+          mockBody,
+          200,
+          headers: {
+            HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8'
+          },
+        ),
+      );
+
+      var vkVideoSearch = VKVideoSearch(
+        apiClient: VKApiClient(
+            accessToken:
+                "4d63da13466b3cb399dca9cbb072eab6cfa7c54ba80622ec4bf91fcb29190fb9417dab58ff252679d5c2d",
+            httpClient: mockHttpClient),
+      );
+
+      expect(
+        () async => await vkVideoSearch.search("riley reid"),
+        throwsA(
+          predicate(
+            (e) =>
+                e is VKError &&
+                e.message ==
+                    "User authorization failed: access_token has expired.",
+          ),
+        ),
+      );
     });
   });
 }

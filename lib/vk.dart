@@ -95,6 +95,26 @@ class _VKAuthPageState extends State<VKAuthPage> {
       WebviewScaffold(url: widget.auth.authUrl);
 }
 
+@JsonSerializable()
+class VKError implements Exception {
+  @JsonKey(name: "error_code")
+  int code;
+  @JsonKey(name: "error_msg")
+  String message;
+
+  VKError({this.code, this.message});
+
+  factory VKError.fromJson(Map<String, dynamic> json) =>
+      _$VKErrorFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VKErrorToJson(this);
+
+  get isTokenExpired => code == 5;
+
+  @override
+  String toString() => this.message;
+}
+
 class VKApiClient {
   /// Токен
   /// https://vk.com/dev/first_guide
@@ -108,14 +128,19 @@ class VKApiClient {
   VKApiClient({@required this.accessToken, httpClient})
       : this.httpClient = httpClient ?? http.Client();
 
-  Future<Map> makeGetRequest(String method, Map<String, String> params) async {
+  Future<Map<String, dynamic>> makeGetRequest(
+      String method, Map<String, String> params) async {
     var url = Uri.https(
       "api.vk.com",
       "/method/$method",
       {"access_token": accessToken, "v": version}..addAll(params),
     ).toString();
-    var videoResp = await httpClient.get(url);
-    return jsonDecode(videoResp.body);
+    var resp = await httpClient.get(url);
+    Map<String, dynamic> jsonResp = jsonDecode(resp.body);
+    if (jsonResp.containsKey("error")) {
+      throw VKError.fromJson(jsonResp["error"]);
+    }
+    return jsonResp;
   }
 }
 
@@ -301,9 +326,7 @@ class VKVideoSearchStarted extends VKEvent {
   VKVideoSearchStarted(this.query);
 }
 
-enum LoadingStatus {
-  started, finished
-}
+enum LoadingStatus { started, finished }
 
 class VKState {
   LoadingStatus loadingStatus;
@@ -343,7 +366,10 @@ class VKBloc extends Bloc<VKEvent, VKState> {
     } else if (event is VKVideoSearchStarted) {
       yield state.copyWith(loadingStatus: LoadingStatus.started);
       var videos = await state.videoSearch.search(event.query);
-      yield state.copyWith(videoQuery: event.query, videos: videos, loadingStatus: LoadingStatus.finished);
+      yield state.copyWith(
+          videoQuery: event.query,
+          videos: videos,
+          loadingStatus: LoadingStatus.finished);
     }
   }
 }
