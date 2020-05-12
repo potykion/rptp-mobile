@@ -35,9 +35,8 @@ class VideosPage extends StatelessWidget {
             title: state.accessToken == null
                 ? Text("Для начала войди в ВК")
                 : state.videoQuery == null
-                    ? Text('Нажми "Загрузить видео"')
+                    ? TapOnIconButtonHint(icon: Icons.autorenew)
                     : VKVideoQueryInput(initialQuery: state.videoQuery),
-//            centerTitle: true,
           ),
           body: state.accessToken != null
               ? buildVideoListView()
@@ -83,5 +82,22 @@ class VideosPage extends StatelessWidget {
                       state.videos.map((v) => VKVideoCard(video: v)).toList(),
                 ),
         ),
+      );
+}
+
+class TapOnIconButtonHint extends StatelessWidget {
+  final IconData icon;
+
+  const TapOnIconButtonHint({Key key, this.icon}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) => Row(
+        children: [
+          Text('Нажми на кнопку'),
+          Padding(
+            padding: EdgeInsets.only(left: 4),
+            child: Icon(icon),
+          ),
+        ],
       );
 }
