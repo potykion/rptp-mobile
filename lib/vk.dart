@@ -329,16 +329,22 @@ class VKVideoSearchStarted extends VKEvent {
 enum LoadingStatus { started, finished }
 
 class VKState {
-  LoadingStatus loadingStatus;
-
   String accessToken;
+  bool accessTokenExpired;
 
+  LoadingStatus loadingStatus;
   String videoQuery;
   List<VKVideo> videos;
 
-  VKState({this.accessToken, this.videoQuery, videos, loadingStatus})
-      : this.videos = videos ?? [],
-        this.loadingStatus = loadingStatus ?? LoadingStatus.finished;
+  VKState({
+    this.accessToken,
+    this.videoQuery = "riley reid",
+    this.videos = const [],
+    this.loadingStatus = LoadingStatus.finished,
+    this.accessTokenExpired = false,
+  });
+
+  get accessTokenValid => accessToken != null && !accessTokenExpired;
 
   get apiClient =>
       accessToken != null ? VKApiClient(accessToken: accessToken) : null;
@@ -347,11 +353,19 @@ class VKState {
       ? AdultVKVideoSearch(VKVideoSearch(apiClient: apiClient))
       : null;
 
-  copyWith({accessToken, videoQuery, videos, loadingStatus}) => VKState(
+  copyWith({
+    accessToken,
+    videoQuery,
+    videos,
+    loadingStatus,
+    accessTokenExpired,
+  }) =>
+      VKState(
         accessToken: accessToken ?? this.accessToken,
         videoQuery: videoQuery ?? this.videoQuery,
         videos: videos ?? this.videos,
         loadingStatus: loadingStatus ?? this.loadingStatus,
+        accessTokenExpired: accessTokenExpired ?? this.accessTokenExpired,
       );
 }
 
@@ -362,14 +376,29 @@ class VKBloc extends Bloc<VKEvent, VKState> {
   @override
   Stream<VKState> mapEventToState(VKEvent event) async* {
     if (event is VKAccessTokenSetEvent) {
-      yield state.copyWith(accessToken: event.accessToken);
-    } else if (event is VKVideoSearchStarted) {
-      yield state.copyWith(loadingStatus: LoadingStatus.started);
-      var videos = await state.videoSearch.search(event.query);
       yield state.copyWith(
+        accessToken: event.accessToken,
+        accessTokenExpired: false,
+      );
+    } else if (event is VKVideoSearchStarted) {
+      yield state.copyWith(
+        loadingStatus: LoadingStatus.started,
+      );
+      try {
+        var videos = await state.videoSearch.search(event.query);
+        yield state.copyWith(
           videoQuery: event.query,
           videos: videos,
-          loadingStatus: LoadingStatus.finished);
+          loadingStatus: LoadingStatus.finished,
+        );
+      } on VKError catch (e) {
+        if (e.isTokenExpired) {
+          yield state.copyWith(
+            loadingStatus: LoadingStatus.finished,
+            accessTokenExpired: true,
+          );
+        }
+      }
     }
   }
 }
