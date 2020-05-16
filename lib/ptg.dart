@@ -49,3 +49,22 @@ class PTGDebutPageParse {
       )
       .toList();
 }
+
+class PTGThumbPageParse {
+  final String pageContent;
+
+  PTGThumbPageParse(this.pageContent);
+
+  List<Actress> get parsedActresses => parse(this.pageContent)
+      .getElementById("updatedvd")
+      .getElementsByClassName("search")
+      .map((e) => e.getElementsByTagName("td").first)
+      .map(
+        (e) => Actress(
+          name: e.text,
+          ptgLink: e.getElementsByTagName("a").first.attributes["href"],
+          ptgThumbnail: e.getElementsByTagName("img").first.attributes["src"],
+        ),
+      )
+      .toList();
+}

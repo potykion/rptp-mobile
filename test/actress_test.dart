@@ -21,15 +21,23 @@ main() {
     );
   });
 
-  test("Test PTG parse", () async {
-    var body = await File('test_data/ptg_debut_page.html').readAsString(
-      encoding: Encoding.getByName("iso-8859-1"),
-    );
+  test("Test PTG debut page parse", () async {
+    var body = await File('test_data/ptg_debut_page.html')
+        .readAsString(encoding: Encoding.getByName("iso-8859-1"));
 
     var actresses = PTGDebutPageParse(body).parsedActresses;
     var actressesDebutYears = actresses.map((a) => a.debutYear).toSet();
 
     expect(actressesDebutYears.reduce(max), 2018);
     expect(actressesDebutYears.reduce(min), 1990);
+  });
+
+  test("PTG thumbs page parse", () async {
+    var body = await File('test_data/ptg_thumbs_a.html')
+        .readAsString(encoding: Encoding.getByName("iso-8859-1"));
+
+    var actresses = PTGThumbPageParse(body).parsedActresses;
+
+    expect(actresses.length, 725);
   });
 }
