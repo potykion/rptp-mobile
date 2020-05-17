@@ -2,24 +2,38 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
+import 'package:rptpmobile/actress/pages.dart';
 import 'package:rptpmobile/pages.dart';
 import 'package:rptpmobile/theme.dart';
+import 'package:rptpmobile/ui_bloc.dart';
 import 'package:rptpmobile/vk.dart';
 
 void main() async {
   await DotEnv().load('.env');
-  runApp(MyApp());
+  runApp(RptpApp());
 }
 
-class MyApp extends StatelessWidget {
+class RptpApp extends StatelessWidget {
   @override
   Widget build(context) => MultiProvider(
+        providers: [
+          BlocProvider<VKBloc>(create: (_) => VKBloc()),
+          BlocProvider<UIBloc>(create: (_) => UIBloc()),
+        ],
         child: MaterialApp(
-          home: VideosPage(),
+          home: BlocBuilder<UIBloc, UIState>(
+            builder: (_, state) {
+              switch (state.currentPage) {
+                case AppPage.videos:
+                  return VideosPage();
+                case AppPage.actress:
+                  return ActressesPage();
+                default:
+                  throw Exception("Неизвестная страница");
+              }
+            },
+          ),
           theme: buildTheme(context),
         ),
-        providers: [
-          BlocProvider<VKBloc>(create: (context) => VKBloc()),
-        ],
       );
 }

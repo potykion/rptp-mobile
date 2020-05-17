@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rptpmobile/theme.dart';
 import 'package:rptpmobile/vk.dart';
 import 'package:rptpmobile/widgets.dart';
 
@@ -18,9 +17,9 @@ class VideosPage extends StatelessWidget {
           body: state.accessTokenValid
               ? buildVideoListView()
               : VKAuthButton(
-                  onAuthComplete: () => context.bloc<VKBloc>().add(
-                        VKVideoSearchStarted(state.videoQuery),
-                      ),
+                  onAuthComplete: () => context
+                      .bloc<VKBloc>()
+                      .add(VKVideoSearchStarted(state.videoQuery)),
                 ),
           floatingActionButton: state.accessTokenValid
               ? FloatingActionButton(
@@ -30,20 +29,7 @@ class VideosPage extends StatelessWidget {
                   child: Icon(Icons.autorenew),
                 )
               : null,
-          bottomNavigationBar: BottomNavigationBar(
-            items: [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.videocam),
-                title: Text("Видео"),
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.recent_actors),
-                title: Text("Актрисы"),
-              ),
-            ],
-            backgroundColor: Pallete[Colors.pink],
-            selectedItemColor: Pallete[Colors.black],
-          ),
+          bottomNavigationBar: AppBottomNavBar(),
         ),
       );
 
