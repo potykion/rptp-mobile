@@ -80,6 +80,10 @@ class AppBottomNavBar extends StatelessWidget {
               icon: Icon(Icons.recent_actors),
               title: Text("Актрисы"),
             ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              title: Text("Настройки"),
+            ),
           ],
           backgroundColor: Pallete[Colors.pink],
           selectedItemColor: Pallete[Colors.black],

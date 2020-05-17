@@ -29,7 +29,7 @@ class RptpApp extends StatelessWidget {
                 case AppPage.actress:
                   return ActressesPage();
                 default:
-                  throw Exception("Неизвестная страница");
+                  throw Exception("Неизвестная страница: ${state.currentPage}");
               }
             },
           ),

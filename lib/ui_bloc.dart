@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 
-enum AppPage { videos, actress }
+enum AppPage { videos, actress, settings }
 
 class UIState {
   final AppPage currentPage;
