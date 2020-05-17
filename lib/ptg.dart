@@ -1,6 +1,8 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 import 'package:html/parser.dart';
-
 import 'actress.dart';
 
 class PTGUrl {
@@ -67,4 +69,36 @@ class PTGThumbPageParse {
         ),
       )
       .toList();
+}
+
+abstract class PTGPageLoad {
+  Future<String> load();
+}
+
+class FilePTGPageLoad extends PTGPageLoad {
+  final String filePath;
+
+  FilePTGPageLoad(this.filePath);
+
+  @override
+  Future<String> load() async => await File(this.filePath)
+      .readAsString(encoding: Encoding.getByName("iso-8859-1"));
+}
+
+class WebPTGPageLoad extends PTGPageLoad {
+  final String path;
+  final String proxyKey;
+  final http.Client httpClient;
+
+  WebPTGPageLoad(this.path, {this.proxyKey, httpClient})
+      : this.httpClient = httpClient ?? http.Client();
+
+  String get url => PTGUrl(
+        this.path,
+        withProxy: this.proxyKey != null,
+        proxyKey: this.proxyKey,
+      ).url;
+
+  @override
+  Future<String> load() async => (await httpClient.get(url)).body;
 }
