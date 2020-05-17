@@ -9,7 +9,6 @@ main() {
 
     String ptgUrl = PTGUrl(
       "/debutyear/debut.html",
-      withProxy: true,
       proxyKey: env['PROXY_KEY'],
     ).url;
 

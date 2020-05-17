@@ -4,21 +4,29 @@ import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 import 'package:html/parser.dart';
 import 'actress.dart';
+import 'string_extensions.dart';
 
+/// PTG = http://www.pornteengirl.com/
+
+/// PTG-урл с возможность проксирования
 class PTGUrl {
   final String path;
-  final bool withProxy;
   final String proxyKey;
 
-  PTGUrl(this.path, {this.withProxy = false, this.proxyKey});
+  PTGUrl(this.path, {this.proxyKey});
 
-  String get url => withProxy
+  String get url => this.proxyKey != null
       ? ProxyUrl(urlToProxy: _ptgUrl, proxyKey: proxyKey).url
       : _ptgUrl;
 
   String get _ptgUrl => Uri.http("www.pornteengirl.com", path).toString();
+
+  factory PTGUrl.thumbUrl({String letter = "a", String proxyKey}) =>
+      PTGUrl("/thumbs/thumbs-$letter.html", proxyKey: proxyKey);
 }
 
+/// Прокси-урл
+/// Прокси осуществляется с помощью https://github.com/potykion/simple-proxy
 class ProxyUrl {
   final String urlToProxy;
   final String proxyKey;
@@ -32,6 +40,7 @@ class ProxyUrl {
       ).toString();
 }
 
+/// Парс PTG debut-страницы: http://www.pornteengirl.com/debutyear/debut.html
 class PTGDebutPageParse {
   final String pageContent;
 
@@ -52,6 +61,7 @@ class PTGDebutPageParse {
       .toList();
 }
 
+/// Парс PTG thumb-страницы: http://www.pornteengirl.com/thumbs/thumbs-a.html
 class PTGThumbPageParse {
   final String pageContent;
 
@@ -71,10 +81,12 @@ class PTGThumbPageParse {
       .toList();
 }
 
+/// Загрузка содержимого PTG-страницы
 abstract class PTGPageLoad {
   Future<String> load();
 }
 
+/// Загрузка содержимого PTG-страницы из файла
 class FilePTGPageLoad extends PTGPageLoad {
   final String filePath;
 
@@ -85,20 +97,29 @@ class FilePTGPageLoad extends PTGPageLoad {
       .readAsString(encoding: Encoding.getByName("iso-8859-1"));
 }
 
-class WebPTGPageLoad extends PTGPageLoad {
-  final String path;
+class LetterActresses {
+  final String letter;
+  final List<Actress> actresses;
+
+  LetterActresses(this.letter, this.actresses);
+}
+
+/// Берет все thumb-страницы по алфавиту, грузит и парсит их по буквенным спискам
+class AlphabetPTGActressLoad {
+  final List<String> alphabet = "abcdefghijklmnopqrstuvwxyz".asList();
+
   final String proxyKey;
   final http.Client httpClient;
 
-  WebPTGPageLoad(this.path, {this.proxyKey, httpClient})
+  AlphabetPTGActressLoad({this.proxyKey, httpClient})
       : this.httpClient = httpClient ?? http.Client();
 
-  String get url => PTGUrl(
-        this.path,
-        withProxy: this.proxyKey != null,
-        proxyKey: this.proxyKey,
-      ).url;
-
-  @override
-  Future<String> load() async => (await httpClient.get(url)).body;
+  Stream<LetterActresses> get actressStream async* {
+    for (var letter in alphabet) {
+      var url = PTGUrl.thumbUrl(letter: letter, proxyKey: proxyKey).url;
+      var pageBody = (await httpClient.get(url)).body;
+      var actresses = PTGThumbPageParse(pageBody).parsedActresses;
+      yield LetterActresses(letter, actresses);
+    }
+  }
 }

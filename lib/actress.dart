@@ -15,13 +15,12 @@ class Actress {
     String name,
     int debutYear,
     String ptgLink,
-    String ptgThumbnail
-  }) {
-    return new Actress(
-      name: name ?? this.name,
-      debutYear: debutYear ?? this.debutYear,
-      ptgLink: ptgLink ?? this.ptgLink,
-      ptgThumbnail: ptgThumbnail ?? this.ptgThumbnail,
-    );
-  }
+    String ptgThumbnail,
+  }) =>
+      new Actress(
+        name: name ?? this.name,
+        debutYear: debutYear ?? this.debutYear,
+        ptgLink: ptgLink ?? this.ptgLink,
+        ptgThumbnail: ptgThumbnail ?? this.ptgThumbnail,
+      );
 }
