@@ -10,6 +10,8 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'ui_bloc.dart';
+
 part 'vk.g.dart';
 
 /// Авторизация VK API
@@ -413,9 +415,10 @@ class VKVideoCard extends StatelessWidget {
         child: GestureDetector(
           child: Stack(
             children: <Widget>[
-              Image.network(
-                video.imageMoreThan600px,
-                fit: BoxFit.fill,
+              BlocBuilder<UIBloc, UIState>(
+                builder: (_, state) => state.kittenPreview
+                    ? Image.asset("assets/kitten1.jpg")
+                    : Image.network(video.imageMoreThan600px, fit: BoxFit.fill),
               ),
               Positioned(
                 child: Chip(label: Text(video.durationString)),

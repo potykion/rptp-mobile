@@ -4,8 +4,9 @@ enum AppPage { videos, actress, settings }
 
 class UIState {
   final AppPage currentPage;
+  final bool kittenPreview;
 
-  UIState({this.currentPage});
+  UIState({this.currentPage, this.kittenPreview = true});
 
   get currentPageIndex => currentPage.index;
 
