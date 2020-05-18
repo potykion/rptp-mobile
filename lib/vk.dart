@@ -413,18 +413,24 @@ class VKVideoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Card(
         child: GestureDetector(
-          child: Stack(
+          child: Column(
             children: <Widget>[
               BlocBuilder<UIBloc, UIState>(
                 builder: (_, state) => state.kittenPreview
                     ? Image.asset("assets/kitten1.jpg")
                     : Image.network(video.imageMoreThan600px, fit: BoxFit.fill),
               ),
-              Positioned(
-                child: Chip(label: Text(video.durationString)),
-                bottom: 0,
-                right: 5,
-              )
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Flexible(child: Text(video.title), flex: 3),
+                    Spacer(),
+                    Chip(label: Text(video.durationString)),
+                  ],
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                ),
+              ),
             ],
           ),
           onTap: () => launch(video.url),
