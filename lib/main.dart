@@ -8,6 +8,8 @@ import 'package:rptpmobile/theme.dart';
 import 'package:rptpmobile/ui_bloc.dart';
 import 'package:rptpmobile/vk.dart';
 
+import 'settings/pages.dart';
+
 void main() async {
   await DotEnv().load('.env');
   runApp(RptpApp());
@@ -28,6 +30,8 @@ class RptpApp extends StatelessWidget {
                   return VideosPage();
                 case AppPage.actress:
                   return ActressesPage();
+                case AppPage.settings:
+                  return SettingsPage();
                 default:
                   throw Exception("Неизвестная страница: ${state.currentPage}");
               }

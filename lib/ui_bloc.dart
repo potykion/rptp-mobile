@@ -12,9 +12,11 @@ class UIState {
 
   copyWith({
     AppPage currentPage,
+    bool kittenPreview
   }) =>
       UIState(
         currentPage: currentPage ?? this.currentPage,
+        kittenPreview: kittenPreview ?? this.kittenPreview,
       );
 }
 
@@ -29,6 +31,12 @@ class PageChangedEvent extends UIEvent {
       PageChangedEvent(AppPage.values[index]);
 }
 
+class KittenPreviewChanged extends UIEvent {
+  final bool kittenPreview;
+
+  KittenPreviewChanged(this.kittenPreview);
+}
+
 class UIBloc extends Bloc<UIEvent, UIState> {
   @override
   UIState get initialState => UIState(currentPage: AppPage.videos);
@@ -37,6 +45,9 @@ class UIBloc extends Bloc<UIEvent, UIState> {
   Stream<UIState> mapEventToState(UIEvent event) async* {
     if (event is PageChangedEvent) {
       yield state.copyWith(currentPage: event.page);
+    }
+    else if (event is KittenPreviewChanged) {
+      yield state.copyWith(kittenPreview: event.kittenPreview);
     }
   }
 }
