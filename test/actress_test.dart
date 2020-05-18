@@ -9,14 +9,14 @@ main() {
 
     String ptgUrl = PTGUrl(
       "/debutyear/debut.html",
-      proxyKey: env['PROXY_KEY'],
+      proxyKey: env['PTG_PROXY_KEY'],
     ).url;
 
     expect(
       ptgUrl,
       "https://potyk-simple-proxy.herokuapp.com/?"
       "url=http%3A%2F%2Fwww.pornteengirl.com%2Fdebutyear%2Fdebut.html&"
-      "key=${env['PROXY_KEY']}",
+      "key=${env['PTG_PROXY_KEY']}",
     );
   });
 

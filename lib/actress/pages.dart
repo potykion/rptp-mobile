@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:rptpmobile/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'blocs.dart';
 
 class ActressesPage extends StatelessWidget {
   @override
@@ -8,9 +11,17 @@ class ActressesPage extends StatelessWidget {
           title: Text("Для начала загрузи базу"),
         ),
         body: Center(
-            child: RaisedButton(
-          onPressed: () {},
-          child: Text("Загрузить базу"),
+            child: BlocBuilder<ActressBloc, ActressState>(
+          builder: (context, state) => state.actressBaseRefreshProgress == 0
+              ? RaisedButton(
+                  onPressed: () => context
+                      .bloc<ActressBloc>()
+                      .add(ActressBaseRefreshStartedEvent()),
+                  child: Text("Загрузить базу"),
+                )
+              : LinearProgressIndicator(
+                  value: state.actressBaseRefreshProgress,
+                ),
         )),
         bottomNavigationBar: AppBottomNavBar(),
       );

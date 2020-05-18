@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
+import 'package:rptpmobile/actress/blocs.dart';
 import 'package:rptpmobile/actress/pages.dart';
 import 'package:rptpmobile/pages.dart';
 import 'package:rptpmobile/theme.dart';
@@ -21,6 +22,7 @@ class RptpApp extends StatelessWidget {
         providers: [
           BlocProvider<VKBloc>(create: (_) => VKBloc()),
           BlocProvider<UIBloc>(create: (_) => UIBloc()),
+          BlocProvider<ActressBloc>(create: (_) => ActressBloc()),
         ],
         child: MaterialApp(
           home: BlocBuilder<UIBloc, UIState>(
