@@ -51,6 +51,12 @@ dependencies:
   # аннотация @required
   meta: ^1.1.8
 
+  # sqlite
+  moor: # use the latest version
+  moor_ffi: # use the latest version
+  path_provider:
+  path:
+
 
 dev_dependencies:
   # моки
@@ -66,6 +72,9 @@ dev_dependencies:
   # .env
   dotenv: ^2.0.0
 
+  # sqlite
+  moor_generator: # use the latest version
+  
 
 
 # For information on the generic Dart part of this file, see the

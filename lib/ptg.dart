@@ -40,27 +40,6 @@ class ProxyUrl {
       ).toString();
 }
 
-/// Парс PTG debut-страницы: http://www.pornteengirl.com/debutyear/debut.html
-class PTGDebutPageParse {
-  final String pageContent;
-
-  PTGDebutPageParse(this.pageContent);
-
-  List<Actress> get parsedActresses => parse(this.pageContent)
-      .getElementById("debut")
-      .getElementsByTagName("tbody")
-      .expand(
-        (row) => row.getElementsByTagName("a").map(
-              (link) => Actress(
-                name: link.text,
-                debutYear: int.parse(row.getElementsByTagName("th").first.text),
-                ptgLink: PTGUrl(link.attributes["href"]).url,
-              ),
-            ),
-      )
-      .toList();
-}
-
 /// Парс PTG thumb-страницы: http://www.pornteengirl.com/thumbs/thumbs-a.html
 class PTGThumbPageParse {
   final String pageContent;

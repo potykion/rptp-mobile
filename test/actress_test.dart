@@ -20,16 +20,6 @@ main() {
     );
   });
 
-  test("Test PTG debut page parse", () async {
-    var body = await FilePTGPageLoad('test_data/ptg_debut_page.html').load();
-
-    var actresses = PTGDebutPageParse(body).parsedActresses;
-    var actressesDebutYears = actresses.map((a) => a.debutYear).toSet();
-
-    expect(actressesDebutYears.reduce(max), 2018);
-    expect(actressesDebutYears.reduce(min), 1990);
-  });
-
   test("PTG thumbs page parse", () async {
     var body = await FilePTGPageLoad('test_data/ptg_thumbs_a.html').load();
 
