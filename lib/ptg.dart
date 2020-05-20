@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 import 'package:html/parser.dart';
-import 'actress.dart';
+import 'package:rptpmobile/ptg/services.dart';
+
+import 'actress/models.dart';
 import 'string_extensions.dart';
 
 /// PTG = http://www.pornteengirl.com/
@@ -35,7 +37,7 @@ class ProxyUrl {
 
   String get url => Uri.https(
         "potyk-simple-proxy.herokuapp.com",
-        "/",
+        "/html",
         {"url": urlToProxy, "key": proxyKey},
       ).toString();
 }
@@ -43,21 +45,29 @@ class ProxyUrl {
 /// Парс PTG thumb-страницы: http://www.pornteengirl.com/thumbs/thumbs-a.html
 class PTGThumbPageParse {
   final String pageContent;
+  final bool proxy;
 
-  PTGThumbPageParse(this.pageContent);
+  PTGThumbPageParse(this.pageContent, {this.proxy = false});
 
   List<Actress> get parsedActresses => parse(this.pageContent)
-      .getElementById("updatedvd")
-      .getElementsByClassName("search")
-      .map((e) => e.getElementsByTagName("td").first)
-      .map(
-        (e) => Actress(
-          name: e.text,
-          ptgLink: e.getElementsByTagName("a").first.attributes["href"],
-          ptgThumbnail: e.getElementsByTagName("img").first.attributes["src"],
-        ),
-      )
-      .toList();
+          .getElementById("updatedvd")
+          .getElementsByClassName("search")
+          .map((e) => e.getElementsByTagName("td").first)
+          .map(
+        (e) {
+          var ptgLink = e.getElementsByTagName("a").first.attributes["href"];
+          var ptgThumbnail =
+              e.getElementsByTagName("img").first.attributes["src"];
+          var ptgId = PTGActressIdParse(ptgLink, proxy: proxy).id;
+
+          return Actress(
+            name: e.text,
+            ptgLink: ptgLink,
+            ptgThumbnail: ptgThumbnail,
+            ptgId: ptgId,
+          );
+        },
+      ).toList();
 }
 
 /// Загрузка содержимого PTG-страницы
@@ -83,10 +93,18 @@ class LetterActresses {
   LetterActresses(this.letter, this.actresses);
 }
 
+final List<String> alphabet = "abcdefghijklmnopqrstuvwxyz".asList();
+
+class LetterProgress {
+  final String letter;
+
+  LetterProgress(this.letter);
+
+  double get letterProgress => (alphabet.indexOf(letter) + 1) / alphabet.length;
+}
+
 /// Берет все thumb-страницы по алфавиту, грузит и парсит их по буквенным спискам
 class AlphabetPTGActressLoad {
-  final List<String> alphabet = "abcdefghijklmnopqrstuvwxyz".asList();
-
   final String proxyKey;
   final http.Client httpClient;
 
@@ -97,7 +115,8 @@ class AlphabetPTGActressLoad {
     for (var letter in alphabet) {
       var url = PTGUrl.thumbUrl(letter: letter, proxyKey: proxyKey).url;
       var pageBody = (await httpClient.get(url)).body;
-      var actresses = PTGThumbPageParse(pageBody).parsedActresses;
+      var actresses =
+          PTGThumbPageParse(pageBody, proxy: proxyKey != null).parsedActresses;
       yield LetterActresses(letter, actresses);
     }
   }

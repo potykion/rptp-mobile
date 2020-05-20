@@ -9,6 +9,7 @@ import 'package:rptpmobile/theme.dart';
 import 'package:rptpmobile/ui_bloc.dart';
 import 'package:rptpmobile/vk.dart';
 
+import 'actress/db.dart';
 import 'settings/pages.dart';
 
 void main() async {
@@ -20,9 +21,15 @@ class RptpApp extends StatelessWidget {
   @override
   Widget build(context) => MultiProvider(
         providers: [
+          Provider<MyDatabase>(create: (_) => MyDatabase()),
+          Provider<ActressRepo>(
+            create: (context) => ActressRepo(context.read<MyDatabase>()),
+          ),
           BlocProvider<VKBloc>(create: (_) => VKBloc()),
           BlocProvider<UIBloc>(create: (_) => UIBloc()),
-          BlocProvider<ActressBloc>(create: (_) => ActressBloc()),
+          BlocProvider<ActressBloc>(
+            create: (context) => ActressBloc(context.read<ActressRepo>()),
+          ),
         ],
         child: MaterialApp(
           home: BlocBuilder<UIBloc, UIState>(

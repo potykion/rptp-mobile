@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:dotenv/dotenv.dart';
 import 'package:rptpmobile/ptg.dart';
+import 'package:rptpmobile/ptg/services.dart';
 
 main() {
   test("PTG url with proxy", () {
@@ -26,5 +27,15 @@ main() {
     var actresses = PTGThumbPageParse(body).parsedActresses;
 
     expect(actresses.length, 725);
+  });
+
+  test("PTG actress id parse from proxy url", () async {
+    var url = "https://potyk-simple-proxy.herokuapp.com/?key=jknjknkjnjknsfcsdf&url=http%3A%2F%2Fwww.pornteengirl.com%2Fmodel%2Faaliyah.html";
+    var id = PTGActressIdParse(url, proxy: true).id;
+    expect(id, "aaliyah");
+
+    url = "http://www.pornteengirl.com/model/aaliyah.html";
+    id = PTGActressIdParse(url, proxy: false).id;
+    expect(id, "aaliyah");
   });
 }

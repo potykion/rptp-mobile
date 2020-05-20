@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:rptpmobile/actress.dart';
+import 'package:rptpmobile/actress/db.dart';
+
 import '../ptg.dart';
 
 class ActressState {
@@ -21,6 +22,10 @@ class ActressEvent {}
 class ActressBaseRefreshStartedEvent extends ActressEvent {}
 
 class ActressBloc extends Bloc<ActressEvent, ActressState> {
+  final ActressRepo actressRepo;
+
+  ActressBloc(this.actressRepo);
+
   @override
   ActressState get initialState => ActressState();
 
@@ -29,10 +34,8 @@ class ActressBloc extends Bloc<ActressEvent, ActressState> {
     if (event is ActressBaseRefreshStartedEvent) {
       var actressLoad = AlphabetPTGActressLoad(proxyKey: state.ptgProxyKey);
       await for (var letterActress in actressLoad.actressStream) {
-        // TODO: save letter actress
-        var progress =
-            (actressLoad.alphabet.indexOf(letterActress.letter) + 1) /
-                actressLoad.alphabet.length;
+        await this.actressRepo.bulkInsert(letterActress.actresses);
+        var progress = LetterProgress(letterActress.letter).letterProgress;
         yield state.copyWith(actressBaseRefreshProgress: progress);
       }
     }
