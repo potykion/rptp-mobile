@@ -35,6 +35,9 @@ class MyDatabase extends _$MyDatabase {
 
   Future<void> bulkInsert(List<DbActressesCompanion> actresses) async =>
       await batch((batch) => batch.insertAll(dbActresses, actresses));
+
+  Future<List<DbActress>> get list => select(dbActresses).get();
+
 }
 
 class ActressRepo {
@@ -46,6 +49,10 @@ class ActressRepo {
         actresses.map((actress) => _actressToInsertCompanion(actress)).toList(),
       );
 
+
+  Future<List<Actress>> list() async =>
+      (await db.list).map((actress) => _dbActressToActress(actress)).toList();
+
   DbActressesCompanion _actressToInsertCompanion(Actress actress) =>
       DbActressesCompanion.insert(
         name: actress.name,
@@ -53,4 +60,10 @@ class ActressRepo {
         ptgLink: actress.ptgLink,
         ptgThumbnail: actress.ptgThumbnail,
       );
+
+  Actress _dbActressToActress(DbActress actress) => Actress(
+      name: actress.name,
+      ptgId: actress.ptgId,
+      ptgLink: actress.ptgLink,
+      ptgThumbnail: actress.ptgThumbnail);
 }

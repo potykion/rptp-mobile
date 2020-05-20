@@ -38,7 +38,7 @@ class RptpApp extends StatelessWidget {
                 case AppPage.videos:
                   return VideosPage();
                 case AppPage.actress:
-                  return ActressesPage();
+                  return ActressPage();
                 case AppPage.settings:
                   return SettingsPage();
                 default:
