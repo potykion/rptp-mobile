@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rptpmobile/ui_bloc.dart';
 import 'package:rptpmobile/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -57,18 +58,23 @@ class ActressListPage extends StatelessWidget {
           mainAxisSpacing: 8,
           children: actresses
               .map(
-                (actress) => Card(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.network(actress.ptgThumbnail),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(actress.name),
-                      ),
-                    ],
+                (actress) => GestureDetector(
+                  child: Card(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.network(actress.ptgThumbnail),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(actress.name),
+                        ),
+                      ],
+                    ),
                   ),
+                  onTap: () => context.bloc<UIBloc>().add(
+                        PageChangedEvent(AppPage.videos, extra: actress.name),
+                      ),
                 ),
               )
               .toList(),

@@ -64,7 +64,7 @@ class ActressBloc extends Bloc<ActressEvent, ActressState> {
     } else if (event is DbRefreshStartedEvent) {
       yield state.copyWith(pageState: ActressPageState.dbRefresh);
 
-      var actresses = [];
+      List<Actress> actresses = [];
       var actressLoad = AlphabetPTGActressLoad(proxyKey: state.ptgProxyKey);
       await for (var letterActress in actressLoad.actressStream) {
         await this.actressRepo.bulkInsert(letterActress.actresses);

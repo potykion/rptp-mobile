@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
@@ -328,15 +329,20 @@ class VKVideoSearchStarted extends VKEvent {
   VKVideoSearchStarted(this.query);
 }
 
+class VideoQuerySetEvent extends VKEvent {
+  String query;
+
+  VideoQuerySetEvent(this.query);
+}
+
 enum LoadingStatus { started, finished }
 
-class VKState {
-  String accessToken;
-  bool accessTokenExpired;
-
-  LoadingStatus loadingStatus;
-  String videoQuery;
-  List<VKVideo> videos;
+class VKState extends Equatable {
+  final String accessToken;
+  final bool accessTokenExpired;
+  final LoadingStatus loadingStatus;
+  final String videoQuery;
+  final List<VKVideo> videos;
 
   VKState({
     this.accessToken,
@@ -369,6 +375,10 @@ class VKState {
         loadingStatus: loadingStatus ?? this.loadingStatus,
         accessTokenExpired: accessTokenExpired ?? this.accessTokenExpired,
       );
+
+  @override
+  List<Object> get props =>
+      [accessToken, videoQuery, videos, loadingStatus, accessTokenExpired];
 }
 
 class VKBloc extends Bloc<VKEvent, VKState> {
@@ -385,11 +395,11 @@ class VKBloc extends Bloc<VKEvent, VKState> {
     } else if (event is VKVideoSearchStarted) {
       yield state.copyWith(
         loadingStatus: LoadingStatus.started,
+        videoQuery: event.query,
       );
       try {
         var videos = await state.videoSearch.search(event.query);
         yield state.copyWith(
-          videoQuery: event.query,
           videos: videos,
           loadingStatus: LoadingStatus.finished,
         );
@@ -401,6 +411,8 @@ class VKBloc extends Bloc<VKEvent, VKState> {
           );
         }
       }
+    } else if (event is VideoQuerySetEvent) {
+      yield state.copyWith(videoQuery: event.query);
     }
   }
 }
