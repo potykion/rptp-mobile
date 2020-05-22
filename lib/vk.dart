@@ -337,7 +337,7 @@ class VideoQuerySetEvent extends VKEvent {
 
 enum LoadingStatus { started, finished }
 
-class VKState extends Equatable {
+class VKState {
   final String accessToken;
   final bool accessTokenExpired;
   final LoadingStatus loadingStatus;
@@ -375,10 +375,6 @@ class VKState extends Equatable {
         loadingStatus: loadingStatus ?? this.loadingStatus,
         accessTokenExpired: accessTokenExpired ?? this.accessTokenExpired,
       );
-
-  @override
-  List<Object> get props =>
-      [accessToken, videoQuery, videos, loadingStatus, accessTokenExpired];
 }
 
 class VKBloc extends Bloc<VKEvent, VKState> {
@@ -465,6 +461,12 @@ class _VKVideoQueryInputState extends State<VKVideoQueryInput> {
   @override
   void initState() {
     super.initState();
+    controller.text = widget.initialQuery;
+  }
+
+  @override
+  void didUpdateWidget(VKVideoQueryInput oldWidget) {
+    super.didUpdateWidget(oldWidget);
     controller.text = widget.initialQuery;
   }
 
