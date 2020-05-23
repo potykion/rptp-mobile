@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:rptpmobile/ui_bloc.dart';
-import 'package:rptpmobile/widgets.dart';
+import 'package:rptpmobile/core/blocs.dart';
+import 'package:rptpmobile/core/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'blocs.dart';
@@ -58,6 +58,7 @@ class ActressListPage extends StatelessWidget {
           mainAxisSpacing: 8,
           children: actresses
               .map(
+                // TODO: extract widget
                 (actress) => GestureDetector(
                   child: Card(
                     child: Column(

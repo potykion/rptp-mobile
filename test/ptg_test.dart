@@ -1,7 +1,6 @@
-import 'dart:math';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:dotenv/dotenv.dart';
-import 'package:rptpmobile/ptg.dart';
+import 'package:rptpmobile/ptg/models.dart';
 import 'package:rptpmobile/ptg/services.dart';
 
 main() {
@@ -15,7 +14,7 @@ main() {
 
     expect(
       ptgUrl,
-      "https://potyk-simple-proxy.herokuapp.com/?"
+      "https://potyk-simple-proxy.herokuapp.com/html?"
       "url=http%3A%2F%2Fwww.pornteengirl.com%2Fdebutyear%2Fdebut.html&"
       "key=${env['PTG_PROXY_KEY']}",
     );
@@ -24,7 +23,7 @@ main() {
   test("PTG thumbs page parse", () async {
     var body = await FilePTGPageLoad('test_data/ptg_thumbs_a.html').load();
 
-    var actresses = PTGThumbPageParse(body).parsedActresses;
+    var actresses = PTGThumbPageParse(body, proxy: true).parsedActresses;
 
     expect(actresses.length, 725);
   });

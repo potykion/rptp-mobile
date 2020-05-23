@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rptpmobile/ui_bloc.dart';
+import 'package:rptpmobile/core/widgets.dart';
 
-import '../widgets.dart';
+import 'blocs.dart';
 
 class SettingsPage extends StatelessWidget {
   @override

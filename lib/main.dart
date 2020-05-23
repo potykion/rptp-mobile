@@ -4,13 +4,13 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:rptpmobile/actress/blocs.dart';
 import 'package:rptpmobile/actress/pages.dart';
-import 'package:rptpmobile/pages.dart';
 import 'package:rptpmobile/theme.dart';
-import 'package:rptpmobile/ui_bloc.dart';
-import 'package:rptpmobile/vk.dart';
+import 'package:rptpmobile/vk/blocs.dart';
 
 import 'actress/db.dart';
-import 'settings/pages.dart';
+import 'core/blocs.dart';
+import 'core/pages.dart';
+import 'vk/pages.dart';
 
 void main() async {
   await DotEnv().load('.env');
@@ -32,6 +32,7 @@ class RptpApp extends StatelessWidget {
           ),
         ],
         child: MaterialApp(
+          // TODO: replace with routes
           home: BlocBuilder<UIBloc, UIState>(
             builder: (_, state) {
               switch (state.currentPage) {
@@ -46,6 +47,9 @@ class RptpApp extends StatelessWidget {
               }
             },
           ),
+          routes: {
+            "/vk-auth": (_) => VKAuthPage(),
+          },
           theme: buildTheme(context),
         ),
       );

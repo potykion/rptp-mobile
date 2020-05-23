@@ -1,8 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:rptpmobile/actress/db.dart';
+import 'package:rptpmobile/ptg/services.dart';
+import 'package:rptpmobile/ptg/view_models.dart';
 
-import '../ptg.dart';
 import 'models.dart';
 
 enum ActressPageState {

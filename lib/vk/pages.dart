@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rptpmobile/vk.dart';
-import 'package:rptpmobile/widgets.dart';
+import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:rptpmobile/core/widgets.dart';
+
+import 'auth/services.dart';
+import 'auth/widgets.dart';
+import 'blocs.dart';
+import 'video/widgets.dart';
 
 class VideosPage extends StatefulWidget {
   final String initialQuery;
@@ -60,4 +65,39 @@ class _VideosPageState extends State<VideosPage> {
                 ? VKVideosGrid(videos: state.videos)
                 : Center(child: CircularProgressIndicator()),
       );
+}
+
+class VKAuthPage extends StatefulWidget {
+  final VKAuth auth;
+
+  VKAuthPage({auth}) : this.auth = auth ?? VKAuth();
+
+  @override
+  _VKAuthPageState createState() => _VKAuthPageState();
+}
+
+class _VKAuthPageState extends State<VKAuthPage> {
+  final flutterWebviewPlugin = new FlutterWebviewPlugin();
+
+  @override
+  void initState() {
+    super.initState();
+
+    flutterWebviewPlugin.onUrlChanged.listen((String url) async {
+      var accessToken = widget.auth.tryParseToken(url);
+      if (accessToken != null) {
+        Navigator.pop(context, accessToken);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    flutterWebviewPlugin.close();
+  }
+
+  @override
+  Widget build(BuildContext context) =>
+      WebviewScaffold(url: widget.auth.authUrl);
 }

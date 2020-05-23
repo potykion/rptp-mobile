@@ -2,8 +2,11 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:rptpmobile/vk.dart';
 import 'package:http/http.dart' as http;
+import 'package:rptpmobile/vk/auth/services.dart';
+import 'package:rptpmobile/vk/core/models.dart';
+import 'package:rptpmobile/vk/core/services.dart';
+import 'package:rptpmobile/vk/video/services.dart';
 
 class MockHttpClient extends Mock implements http.Client {}
 
