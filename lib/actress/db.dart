@@ -38,6 +38,14 @@ class MyDatabase extends _$MyDatabase {
 
   Future<List<DbActress>> get list => select(dbActresses).get();
 
+  String get dbActressesTable => $DbActressesTable(null).actualTableName;
+
+  Future<DbActress> get getRandom async {
+    var query =
+        "SELECT * FROM ${dbActressesTable} WHERE id IN (SELECT id FROM ${dbActressesTable} ORDER BY RANDOM() LIMIT 1)";
+    var row = await customSelect(query).getSingle();
+    return DbActress.fromData(row.data, this);
+  }
 }
 
 class ActressRepo {
@@ -49,9 +57,10 @@ class ActressRepo {
         actresses.map((actress) => _actressToInsertCompanion(actress)).toList(),
       );
 
-
   Future<List<Actress>> list() async =>
       (await db.list).map((actress) => _dbActressToActress(actress)).toList();
+
+  Future<Actress> getRandom() async => _dbActressToActress(await db.getRandom);
 
   DbActressesCompanion _actressToInsertCompanion(Actress actress) =>
       DbActressesCompanion.insert(

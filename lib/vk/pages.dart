@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:rptpmobile/actress/db.dart';
 import 'package:rptpmobile/core/widgets.dart';
-
+import 'package:provider/provider.dart';
 import 'auth/services.dart';
 import 'auth/widgets.dart';
 import 'blocs.dart';
@@ -49,9 +50,12 @@ class _VideosPageState extends State<VideosPage> {
                 ),
           floatingActionButton: state.accessTokenValid
               ? FloatingActionButton(
-                  onPressed: () => context
-                      .bloc<VKBloc>()
-                      .add(VKVideoSearchStarted(state.videoQuery)),
+                  onPressed: () async {
+                    var actress = await context.read<ActressRepo>().getRandom();
+                    context
+                        .bloc<VKBloc>()
+                        .add(VKVideoSearchStarted(actress.name));
+                  },
                   child: Icon(Icons.autorenew),
                 )
               : null,
