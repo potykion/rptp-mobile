@@ -37,7 +37,7 @@ class RptpApp extends StatelessWidget {
             builder: (_, state) {
               switch (state.currentPage) {
                 case AppPage.videos:
-                  return VideosPage(initialQuery: state.initialPageData);
+                  return VideosPage();
                 case AppPage.actress:
                   return ActressPage();
                 case AppPage.settings:
@@ -48,7 +48,7 @@ class RptpApp extends StatelessWidget {
             },
           ),
           routes: {
-            "/vk-auth": (_) => VKAuthPage(),
+            "/vk-auth": (_) => VKAuthWebviewPage(),
           },
           theme: buildTheme(context),
         ),

@@ -36,7 +36,7 @@ class VKState {
 
   VKState({
     this.accessToken,
-    this.videoQuery = "riley reid",
+    this.videoQuery,
     this.videos = const [],
     this.loadingStatus = LoadingStatus.finished,
     this.accessTokenExpired = false,
