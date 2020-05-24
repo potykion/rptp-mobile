@@ -13,14 +13,13 @@ class SettingsPage extends StatelessWidget {
         body: ListView(
           children: [
             BlocBuilder<UIBloc, UIState>(
-              builder: (BuildContext context, UIState state) => ListTile(
+              builder: (BuildContext context, UIState state) =>
+                  CheckboxListTile(
                 title: Text("Превьюшки-котики"),
-                trailing: Checkbox(
-                  value: state.kittenPreview,
-                  onChanged: (newKittenPreview) => context
-                      .bloc<UIBloc>()
-                      .add(KittenPreviewChanged(newKittenPreview)),
-                ),
+                value: state.kittenPreview,
+                onChanged: (newKittenPreview) => context
+                    .bloc<UIBloc>()
+                    .add(KittenPreviewChanged(newKittenPreview)),
               ),
             )
           ],
