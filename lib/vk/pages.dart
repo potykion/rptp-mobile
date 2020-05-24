@@ -9,24 +9,7 @@ import 'auth/widgets.dart';
 import 'blocs.dart';
 import 'video/widgets.dart';
 
-class VideosPage extends StatefulWidget {
-  final String initialQuery;
-
-  VideosPage({this.initialQuery});
-
-  @override
-  _VideosPageState createState() => _VideosPageState();
-}
-
-class _VideosPageState extends State<VideosPage> {
-  @override
-  void initState() {
-    super.initState();
-    if (widget.initialQuery != null) {
-      context.bloc<VKBloc>().add(VKVideoSearchStarted(widget.initialQuery));
-    }
-  }
-
+class VideosPage extends StatelessWidget {
   @override
   Widget build(context) => BlocBuilder<VKBloc, VKState>(
         builder: (context, state) =>

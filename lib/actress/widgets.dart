@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:rptpmobile/core/blocs.dart';
-
+import '../vk/blocs.dart';
 import 'models.dart';
 
 class ActressCard extends StatelessWidget {
@@ -32,8 +32,9 @@ class ActressCard extends StatelessWidget {
             ),
           ),
         ),
-        onTap: () => context.bloc<UIBloc>().add(
-              PageChangedEvent(AppPage.videos, extra: actress.name),
-            ),
+        onTap: () {
+          context.bloc<UIBloc>().add(PageChangedEvent(AppPage.videos));
+          context.bloc<VKBloc>().add(VKVideoSearchStarted(actress.name));
+        },
       );
 }
