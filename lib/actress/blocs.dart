@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:intl/intl.dart';
 import 'package:rptpmobile/actress/db.dart';
 import 'package:rptpmobile/ptg/services.dart';
 import 'package:rptpmobile/ptg/view_models.dart';
@@ -19,32 +20,42 @@ class ActressState {
   final String ptgProxyKey;
   final List<Actress> actresses;
   final String actressNamePattern;
+  final DateTime lastActressDbUpdate;
 
-  ActressState({
-    this.pageState = ActressPageState.dbCheck,
-    this.dbRefreshProgress = 0,
-    ptgProxyKey,
-    this.actresses = const [],
-    this.actressNamePattern = "",
-  }) : this.ptgProxyKey = ptgProxyKey ?? DotEnv().env['PTG_PROXY_KEY'];
+  ActressState(
+      {this.pageState = ActressPageState.dbCheck,
+      this.dbRefreshProgress = 0,
+      ptgProxyKey,
+      this.actresses = const [],
+      this.actressNamePattern = "",
+      this.lastActressDbUpdate})
+      : this.ptgProxyKey = ptgProxyKey ?? DotEnv().env['PTG_PROXY_KEY'];
 
   List<Actress> get matchingActresses => actresses
       .where(
-        (actress) => actress.name.toLowerCase().contains(actressNamePattern.toLowerCase()),
+        (actress) => actress.name
+            .toLowerCase()
+            .contains(actressNamePattern.toLowerCase()),
       )
       .toList();
+
+  String get lastActressDbUpdateStr => lastActressDbUpdate != null
+      ? DateFormat.yMMMMd("ru_RU").format(lastActressDbUpdate)
+      : "Давненько не было";
 
   copyWith({
     ActressPageState pageState,
     double actressBaseRefreshProgress,
     List<Actress> actresses,
     String actressNamePattern,
+    DateTime lastActressDbUpdate,
   }) =>
       ActressState(
         pageState: pageState ?? this.pageState,
         dbRefreshProgress: actressBaseRefreshProgress ?? this.dbRefreshProgress,
         actresses: actresses ?? this.actresses,
         actressNamePattern: actressNamePattern ?? this.actressNamePattern,
+        lastActressDbUpdate: lastActressDbUpdate ?? this.lastActressDbUpdate,
       );
 }
 
@@ -79,7 +90,10 @@ class ActressBloc extends Bloc<ActressEvent, ActressState> {
         actresses: actresses,
       );
     } else if (event is DbRefreshStartedEvent) {
-      yield state.copyWith(pageState: ActressPageState.dbRefresh);
+      yield state.copyWith(
+        pageState: ActressPageState.dbRefresh,
+        actressBaseRefreshProgress: 0,
+      );
 
       List<Actress> actresses = [];
       var actressLoad = AlphabetPTGActressLoad(proxyKey: state.ptgProxyKey);
@@ -94,6 +108,7 @@ class ActressBloc extends Bloc<ActressEvent, ActressState> {
       yield state.copyWith(
         pageState: ActressPageState.notEmptyDb,
         actresses: actresses,
+        lastActressDbUpdate: DateTime.now(),
       );
     } else if (event is ActressNamePatternSet) {
       yield state.copyWith(actressNamePattern: event.pattern);

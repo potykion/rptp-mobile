@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:rptpmobile/actress/widgets.dart';
 import 'package:rptpmobile/core/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -53,14 +52,7 @@ class ActressListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(title: ActressNamePatternInput()),
-        body: StaggeredGridView.countBuilder(
-          itemCount: actresses.length,
-          crossAxisCount: 3,
-          mainAxisSpacing: 8,
-          padding: EdgeInsets.all(8),
-          staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
-          itemBuilder: (_, index) => ActressCard(actress: actresses[index]),
-        ),
+        body: ActressGrid(actresses: actresses),
         bottomNavigationBar: AppBottomNavBar(),
       );
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rptpmobile/actress/widgets.dart';
 import 'package:rptpmobile/core/widgets.dart';
 
 import 'blocs.dart';
@@ -7,9 +8,7 @@ import 'blocs.dart';
 class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: Text("Настроечки"),
-        ),
+        appBar: AppBar(title: Text("Настроечки")),
         body: ListView(
           children: [
             BlocBuilder<UIBloc, UIState>(
@@ -21,7 +20,9 @@ class SettingsPage extends StatelessWidget {
                     .bloc<UIBloc>()
                     .add(KittenPreviewChanged(newKittenPreview)),
               ),
-            )
+            ),
+            Divider(),
+            ActressStats(),
           ],
         ),
         bottomNavigationBar: AppBottomNavBar(),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:rptpmobile/actress/blocs.dart';
 import 'package:rptpmobile/actress/pages.dart';
@@ -14,6 +15,7 @@ import 'vk/pages.dart';
 
 void main() async {
   await DotEnv().load('.env');
+  await initializeDateFormatting("ru_RU", null);
   runApp(RptpApp());
 }
 
