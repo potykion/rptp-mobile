@@ -97,6 +97,7 @@ class _VKVideoQueryInputState extends State<VKVideoQueryInput> {
       controller: controller,
       decoration: InputDecoration(
           border: InputBorder.none,
+          hintText: "что будем искать?",
           suffixIcon: IconButton(
             icon: Icon(
               Icons.search,

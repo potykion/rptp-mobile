@@ -4,23 +4,6 @@ import 'package:rptpmobile/theme.dart';
 
 import 'blocs.dart';
 
-class TapOnIconButtonHint extends StatelessWidget {
-  final IconData icon;
-
-  const TapOnIconButtonHint({Key key, this.icon}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) => Row(
-        children: [
-          Text('Нажми на кнопку'),
-          Padding(
-            padding: EdgeInsets.only(left: 4),
-            child: Icon(icon),
-          ),
-        ],
-      );
-}
-
 class AppBottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) => BlocBuilder<UIBloc, UIState>(

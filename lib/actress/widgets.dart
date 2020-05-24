@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:provider/provider.dart';
 import 'package:rptpmobile/core/blocs.dart';
 import '../vk/blocs.dart';
+import 'db.dart';
 import 'models.dart';
 
 class ActressCard extends StatelessWidget {
@@ -36,5 +37,16 @@ class ActressCard extends StatelessWidget {
           context.bloc<UIBloc>().add(PageChangedEvent(AppPage.videos));
           context.bloc<VKBloc>().add(VKVideoSearchStarted(actress.name));
         },
+      );
+}
+
+class RandomActressFAB extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) => FloatingActionButton(
+        onPressed: () async {
+          var actress = await context.read<ActressRepo>().getRandom();
+          context.bloc<VKBloc>().add(VKVideoSearchStarted(actress.name));
+        },
+        child: Icon(Icons.autorenew),
       );
 }
