@@ -37,6 +37,7 @@ class RptpApp extends StatelessWidget {
             builder: (_, state) {
               switch (state.currentPage) {
                 case AppPage.videos:
+                  // todo: should be removed - initialQuery: state.initialPageData
                   return VideosPage(initialQuery: state.initialPageData);
                 case AppPage.actress:
                   return ActressPage();

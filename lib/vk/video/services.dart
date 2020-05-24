@@ -72,5 +72,5 @@ class AdultVKVideoSearch {
   AdultVKVideoSearch(this.videoSearch);
 
   Future<List<VKVideo>> search(String query) async =>
-      (await videoSearch.search(query)).where((v) => !v.canAdd).toList();
+      (await videoSearch.search(query)).where((v) => !v.canAdd && !v.contentRestricted).toList();
 }

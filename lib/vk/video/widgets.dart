@@ -20,7 +20,7 @@ class VKVideosGrid extends StatelessWidget {
               )
             : GridView.count(
                 crossAxisCount: 2,
-                childAspectRatio: 1.75,
+                childAspectRatio: 1.2,
                 children: videos.map((v) => VKVideoCard(video: v)).toList(),
               ),
       );
@@ -45,8 +45,7 @@ class VKVideoCard extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: [
-                    Flexible(child: Text(video.title), flex: 3),
-                    Spacer(),
+                  Expanded(child: Text(video.title),),
                     Chip(label: Text(video.durationString)),
                   ],
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

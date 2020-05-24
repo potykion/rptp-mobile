@@ -54,6 +54,7 @@ VKVideo _$VKVideoFromJson(Map<String, dynamic> json) {
     date: timestampToDateTime(json['date'] as int),
     comments: json['comments'] as int,
     canAdd: intToBool(json['can_add'] as int),
+    contentRestricted: intToBool(json['content_restricted'] as int),
   );
 }
 
@@ -69,4 +70,5 @@ Map<String, dynamic> _$VKVideoToJson(VKVideo instance) => <String, dynamic>{
       'date': instance.date?.toIso8601String(),
       'comments': instance.comments,
       'can_add': instance.canAdd,
+      'content_restricted': instance.contentRestricted,
     };

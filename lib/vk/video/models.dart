@@ -51,6 +51,8 @@ class VKVideo {
   int comments;
   @JsonKey(fromJson: intToBool)
   bool canAdd;
+  @JsonKey(fromJson: intToBool)
+  bool contentRestricted;
 
   VKVideo({
     this.id,
@@ -64,6 +66,7 @@ class VKVideo {
     this.date,
     this.comments,
     this.canAdd,
+    this.contentRestricted,
   });
 
   factory VKVideo.fromJson(Map<String, dynamic> json) =>
