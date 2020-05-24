@@ -30,7 +30,7 @@ class ActressState {
 
   List<Actress> get matchingActresses => actresses
       .where(
-        (actress) => actress.name.toLowerCase().contains(actressNamePattern),
+        (actress) => actress.name.toLowerCase().contains(actressNamePattern.toLowerCase()),
       )
       .toList();
 
