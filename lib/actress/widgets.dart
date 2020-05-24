@@ -17,10 +17,16 @@ class ActressCard extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                ClipRRect (child: Image.network(actress.ptgThumbnail), borderRadius: BorderRadius.circular(5),),
+                ClipRRect(
+                  child: Image.network(actress.ptgThumbnail),
+                  borderRadius: BorderRadius.circular(5),
+                ),
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
-                  child: Text(actress.name),
+                  child: Text(
+                    actress.name,
+                    style: TextStyle(fontSize: 12),
+                  ),
                 ),
               ],
             ),

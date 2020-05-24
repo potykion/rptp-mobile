@@ -50,7 +50,10 @@ class VKVideoCard extends StatelessWidget {
                 child: Row(
                   children: [
                     Expanded(
-                      child: Text(video.title, style: TextStyle(fontSize: 12),),
+                      child: Text(
+                        video.title,
+                        style: TextStyle(fontSize: 12),
+                      ),
                     ),
                     Chip(label: Text(video.durationString)),
                   ],
