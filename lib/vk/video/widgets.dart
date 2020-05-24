@@ -12,18 +12,20 @@ class VKVideosGrid extends StatelessWidget {
   const VKVideosGrid({Key key, this.videos}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => OrientationBuilder(
-        builder: (_, orientation) => orientation == Orientation.portrait
-            ? ListView.builder(
-                itemBuilder: (_, index) => VKVideoCard(video: videos[index]),
-                itemCount: videos.length,
-              )
-            : GridView.count(
-                crossAxisCount: 2,
-                childAspectRatio: 1.2,
-                children: videos.map((v) => VKVideoCard(video: v)).toList(),
-              ),
-      );
+  Widget build(BuildContext context) => videos.length == 0
+      ? Center(child: Text("Ничего не нашлось"))
+      : OrientationBuilder(
+          builder: (_, orientation) => orientation == Orientation.portrait
+              ? ListView.builder(
+                  itemBuilder: (_, index) => VKVideoCard(video: videos[index]),
+                  itemCount: videos.length,
+                )
+              : GridView.count(
+                  crossAxisCount: 2,
+                  childAspectRatio: 1.2,
+                  children: videos.map((v) => VKVideoCard(video: v)).toList(),
+                ),
+        );
 }
 
 class VKVideoCard extends StatelessWidget {
@@ -45,7 +47,9 @@ class VKVideoCard extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: [
-                  Expanded(child: Text(video.title),),
+                    Expanded(
+                      child: Text(video.title),
+                    ),
                     Chip(label: Text(video.durationString)),
                   ],
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
