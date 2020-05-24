@@ -43,9 +43,11 @@ class VKVideosPage extends StatelessWidget {
                 ? TapOnIconButtonHint(icon: Icons.autorenew)
                 : VKVideoQueryInput(initialQuery: state.videoQuery),
           ),
-          body: state.loadingStatus == LoadingStatus.finished
-              ? VKVideosGrid(videos: state.videos)
-              : Center(child: CircularProgressIndicator()),
+          body: state.videoQuery == null
+              ? Container()
+              : state.loadingStatus == LoadingStatus.finished
+                  ? VKVideosGrid(videos: state.videos)
+                  : Center(child: CircularProgressIndicator()),
           floatingActionButton: FloatingActionButton(
             onPressed: () async {
               var actress = await context.read<ActressRepo>().getRandom();
