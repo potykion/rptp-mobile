@@ -14,4 +14,7 @@ buildTheme(context) => ThemeData(
             backgroundColor: Pallete[Colors.pink],
             labelStyle: TextStyle(color: Pallete[Colors.black]),
           ),
+      inputDecorationTheme: InputDecorationTheme(
+        border: InputBorder.none,
+      ),
     );

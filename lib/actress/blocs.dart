@@ -18,23 +18,33 @@ class ActressState {
   final double dbRefreshProgress;
   final String ptgProxyKey;
   final List<Actress> actresses;
+  final String actressNamePattern;
 
   ActressState({
     this.pageState = ActressPageState.dbCheck,
     this.dbRefreshProgress = 0,
     ptgProxyKey,
     this.actresses = const [],
+    this.actressNamePattern = "",
   }) : this.ptgProxyKey = ptgProxyKey ?? DotEnv().env['PTG_PROXY_KEY'];
+
+  List<Actress> get matchingActresses => actresses
+      .where(
+        (actress) => actress.name.toLowerCase().contains(actressNamePattern),
+      )
+      .toList();
 
   copyWith({
     ActressPageState pageState,
     double actressBaseRefreshProgress,
     List<Actress> actresses,
+    String actressNamePattern,
   }) =>
       ActressState(
         pageState: pageState ?? this.pageState,
         dbRefreshProgress: actressBaseRefreshProgress ?? this.dbRefreshProgress,
         actresses: actresses ?? this.actresses,
+        actressNamePattern: actressNamePattern ?? this.actressNamePattern,
       );
 }
 
@@ -43,6 +53,12 @@ class ActressEvent {}
 class DbCheckedEvent extends ActressEvent {}
 
 class DbRefreshStartedEvent extends ActressEvent {}
+
+class ActressNamePatternSet extends ActressEvent {
+  final String pattern;
+
+  ActressNamePatternSet(this.pattern);
+}
 
 class ActressBloc extends Bloc<ActressEvent, ActressState> {
   final ActressRepo actressRepo;
@@ -79,6 +95,8 @@ class ActressBloc extends Bloc<ActressEvent, ActressState> {
         pageState: ActressPageState.notEmptyDb,
         actresses: actresses,
       );
+    } else if (event is ActressNamePatternSet) {
+      yield state.copyWith(actressNamePattern: event.pattern);
     }
   }
 }

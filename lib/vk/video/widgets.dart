@@ -92,22 +92,17 @@ class _VKVideoQueryInputState extends State<VKVideoQueryInput> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return TextFormField(
+  Widget build(BuildContext context) => TextFormField(
       controller: controller,
       decoration: InputDecoration(
-          border: InputBorder.none,
-          hintText: "что будем искать?",
-          suffixIcon: IconButton(
-            icon: Icon(
-              Icons.search,
-              color: Colors.black,
-            ),
-            onPressed: () {
-              context.bloc<VKBloc>().add(VKVideoSearchStarted(controller.text));
-              FocusScope.of(context).requestFocus(new FocusNode());
-            },
-          )),
+        hintText: "что будем искать?",
+        suffixIcon: IconButton(
+          icon: Icon(Icons.search, color: Colors.black),
+          onPressed: () {
+            context.bloc<VKBloc>().add(VKVideoSearchStarted(controller.text));
+            FocusScope.of(context).requestFocus(new FocusNode());
+          },
+        ),
+      ),
     );
-  }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:rptpmobile/actress/blocs.dart';
 import 'package:rptpmobile/core/blocs.dart';
 import '../vk/blocs.dart';
 import 'db.dart';
@@ -49,4 +50,31 @@ class RandomActressFAB extends StatelessWidget {
         },
         child: Icon(Icons.autorenew),
       );
+}
+
+class ActressNamePatternInput extends StatefulWidget {
+  @override
+  _ActressNamePatternInputState createState() =>
+      _ActressNamePatternInputState();
+}
+
+class _ActressNamePatternInputState extends State<ActressNamePatternInput> {
+  TextEditingController controller = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    controller.text = context.bloc<ActressBloc>().state.actressNamePattern;
+    controller.addListener(() => context
+        .bloc<ActressBloc>()
+        .add(ActressNamePatternSet(controller.text)));
+  }
+
+  @override
+  Widget build(BuildContext context) => TextFormField(
+    controller: controller,
+    decoration: InputDecoration(
+      hintText: "кого будем искать?"
+    ),
+  );
 }

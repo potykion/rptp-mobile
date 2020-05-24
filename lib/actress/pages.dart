@@ -14,7 +14,7 @@ class ActressPage extends StatelessWidget {
           if (state.pageState == ActressPageState.dbCheck) {
             return DbCheckPage();
           } else if (state.pageState == ActressPageState.notEmptyDb) {
-            return ActressListPage(actresses: state.actresses);
+            return ActressListPage(actresses: state.matchingActresses);
           } else if (state.pageState == ActressPageState.emptyDb) {
             return DbRefreshButtonPage();
           } else if (state.pageState == ActressPageState.dbRefresh) {
@@ -52,7 +52,7 @@ class ActressListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(title: Text("База актрис")),
+        appBar: AppBar(title: ActressNamePatternInput()),
         body: StaggeredGridView.countBuilder(
           itemCount: actresses.length,
           crossAxisCount: 3,
