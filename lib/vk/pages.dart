@@ -9,7 +9,24 @@ import 'auth/widgets.dart';
 import 'blocs.dart';
 import 'video/widgets.dart';
 
-class VideosPage extends StatelessWidget {
+class VideosPage extends StatefulWidget {
+  final String initialQuery;
+
+  VideosPage({this.initialQuery});
+
+  @override
+  _VideosPageState createState() => _VideosPageState();
+}
+
+class _VideosPageState extends State<VideosPage> {
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialQuery != null) {
+      context.bloc<VKBloc>().add(VKVideoSearchStarted(widget.initialQuery));
+    }
+  }
+
   @override
   Widget build(context) => BlocBuilder<VKBloc, VKState>(
         builder: (context, state) =>
@@ -17,28 +34,7 @@ class VideosPage extends StatelessWidget {
       );
 }
 
-class VKVideosPage extends StatefulWidget {
-  final String initialQuery;
-
-  VKVideosPage({this.initialQuery});
-
-  @override
-  _VKVideosPageState createState() => _VKVideosPageState();
-}
-
-class _VKVideosPageState extends State<VKVideosPage> {
-  @override
-  void initState() {
-    super.initState();
-    if (widget.initialQuery != null) {
-      var event = context.bloc<VKBloc>().state.accessTokenValid
-          ? VKVideoSearchStarted(widget.initialQuery)
-          : VideoQuerySetEvent(widget.initialQuery);
-
-      context.bloc<VKBloc>().add(event);
-    }
-  }
-
+class VKVideosPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => BlocBuilder<VKBloc, VKState>(
         builder: (context, state) => Scaffold(
@@ -66,7 +62,12 @@ class VKAuthPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(title: Text("Для начала войди в ВК")),
-        body: Center(child: VKAuthButton()),
+        body: Center(
+          child: VKAuthButton(
+            onAuthComplete: () =>
+                context.bloc<VKBloc>().add(VKVideoSearchStarted()),
+          ),
+        ),
         bottomNavigationBar: AppBottomNavBar(),
       );
 }

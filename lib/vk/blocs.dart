@@ -16,7 +16,7 @@ class VKAccessTokenSetEvent extends VKEvent {
 class VKVideoSearchStarted extends VKEvent {
   String query;
 
-  VKVideoSearchStarted(this.query);
+  VKVideoSearchStarted([this.query]);
 }
 
 class VideoQuerySetEvent extends VKEvent {
@@ -47,7 +47,7 @@ class VKState {
   get apiClient =>
       accessToken != null ? VKApiClient(accessToken: accessToken) : null;
 
-  get videoSearch => apiClient != null
+  AdultVKVideoSearch get videoSearch => apiClient != null
       ? AdultVKVideoSearch(VKVideoSearch(apiClient: apiClient))
       : null;
 
@@ -79,12 +79,20 @@ class VKBloc extends Bloc<VKEvent, VKState> {
         accessTokenExpired: false,
       );
     } else if (event is VKVideoSearchStarted) {
-      yield state.copyWith(
-        loadingStatus: LoadingStatus.started,
-        videoQuery: event.query,
-      );
+      var videoQuery = event.query ?? state.videoQuery;
+      if (videoQuery == null) {
+        return;
+      } else {
+        yield state.copyWith(videoQuery: videoQuery);
+      }
+
+      if (!state.accessTokenValid) {
+        return;
+      }
+
       try {
-        var videos = await state.videoSearch.search(event.query);
+        yield state.copyWith(loadingStatus: LoadingStatus.started);
+        var videos = await state.videoSearch.search(videoQuery);
         yield state.copyWith(
           videos: videos,
           loadingStatus: LoadingStatus.finished,
@@ -97,8 +105,6 @@ class VKBloc extends Bloc<VKEvent, VKState> {
           );
         }
       }
-    } else if (event is VideoQuerySetEvent) {
-      yield state.copyWith(videoQuery: event.query);
     }
   }
 }

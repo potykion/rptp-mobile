@@ -37,7 +37,7 @@ class RptpApp extends StatelessWidget {
             builder: (_, state) {
               switch (state.currentPage) {
                 case AppPage.videos:
-                  return VideosPage();
+                  return VideosPage(initialQuery: state.initialPageData);
                 case AppPage.actress:
                   return ActressPage();
                 case AppPage.settings:
