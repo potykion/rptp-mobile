@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:rptpmobile/core/blocs.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -20,10 +21,11 @@ class VKVideosGrid extends StatelessWidget {
                   itemBuilder: (_, index) => VKVideoCard(video: videos[index]),
                   itemCount: videos.length,
                 )
-              : GridView.count(
-                  crossAxisCount: 2,
-                  childAspectRatio: 1.2,
-                  children: videos.map((v) => VKVideoCard(video: v)).toList(),
+              : StaggeredGridView.countBuilder(
+                  crossAxisCount: 3,
+                  itemCount: videos.length,
+                  staggeredTileBuilder: (index) => StaggeredTile.fit(1),
+                  itemBuilder: (_, index) => VKVideoCard(video: videos[index]),
                 ),
         );
 }
@@ -48,7 +50,7 @@ class VKVideoCard extends StatelessWidget {
                 child: Row(
                   children: [
                     Expanded(
-                      child: Text(video.title),
+                      child: Text(video.title, style: TextStyle(fontSize: 12),),
                     ),
                     Chip(label: Text(video.durationString)),
                   ],

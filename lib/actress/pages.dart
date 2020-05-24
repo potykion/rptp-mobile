@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:rptpmobile/core/blocs.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:rptpmobile/actress/widgets.dart';
 import 'package:rptpmobile/core/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -52,33 +53,13 @@ class ActressListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(title: Text("База актрис")),
-        body: GridView.count(
+        body: StaggeredGridView.countBuilder(
+          itemCount: actresses.length,
           crossAxisCount: 3,
-          childAspectRatio: 0.7,
           mainAxisSpacing: 8,
-          children: actresses
-              .map(
-                // TODO: extract widget
-                (actress) => GestureDetector(
-                  child: Card(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.network(actress.ptgThumbnail),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(actress.name),
-                        ),
-                      ],
-                    ),
-                  ),
-                  onTap: () => context.bloc<UIBloc>().add(
-                        PageChangedEvent(AppPage.videos, extra: actress.name),
-                      ),
-                ),
-              )
-              .toList(),
+          padding: EdgeInsets.all(8),
+          staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
+          itemBuilder: (_, index) => ActressCard(actress: actresses[index]),
         ),
         bottomNavigationBar: AppBottomNavBar(),
       );
