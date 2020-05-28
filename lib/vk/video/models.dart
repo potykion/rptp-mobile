@@ -54,26 +54,6 @@ class VKVideo {
   @JsonKey(fromJson: intToBool)
   bool contentRestricted;
 
-  VKVideo({
-    this.id,
-    this.ownerId,
-    this.title,
-    this.description,
-    this.images,
-    this.duration,
-    this.views,
-    this.likes,
-    this.date,
-    this.comments,
-    this.canAdd,
-    this.contentRestricted,
-  });
-
-  factory VKVideo.fromJson(Map<String, dynamic> json) =>
-      _$VKVideoFromJson(json);
-
-  Map<String, dynamic> toJson() => _$VKVideoToJson(this);
-
   int get likesCount => likes.count;
 
   /// < 600px выглядит плохо на мобилке =>
@@ -97,4 +77,24 @@ class VKVideo {
       );
 
   String get durationString => DateFormat.Hms().format(durationDatetime);
+
+  VKVideo({
+    this.id,
+    this.ownerId,
+    this.title,
+    this.description,
+    this.images,
+    this.duration,
+    this.views,
+    this.likes,
+    this.date,
+    this.comments,
+    this.canAdd,
+    this.contentRestricted,
+  });
+
+  factory VKVideo.fromJson(Map<String, dynamic> json) =>
+      _$VKVideoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VKVideoToJson(this);
 }

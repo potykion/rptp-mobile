@@ -1,9 +1,12 @@
-import 'package:bloc/bloc.dart';
-import 'package:rptpmobile/vk/video/models.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:json_annotation/json_annotation.dart';
+import 'package:rptpmobile/vk/video/view_models.dart';
 
 import 'core/models.dart';
 import 'core/services.dart';
 import 'video/services.dart';
+
+part 'blocs.g.dart';
 
 class VKEvent {}
 
@@ -27,20 +30,13 @@ class VideoQuerySetEvent extends VKEvent {
 
 enum LoadingStatus { started, finished }
 
+@JsonSerializable()
 class VKState {
   final String accessToken;
   final bool accessTokenExpired;
   final LoadingStatus loadingStatus;
   final String videoQuery;
-  final List<VKVideo> videos;
-
-  VKState({
-    this.accessToken,
-    this.videoQuery,
-    this.videos = const [],
-    this.loadingStatus = LoadingStatus.finished,
-    this.accessTokenExpired = false,
-  });
+  final List<VideoVM> videos;
 
   get accessTokenValid => accessToken != null && !accessTokenExpired;
 
@@ -51,12 +47,25 @@ class VKState {
       ? AdultVKVideoSearch(VKVideoSearch(apiClient: apiClient))
       : null;
 
+  VKState({
+    this.accessToken,
+    this.videoQuery,
+    this.videos = const [],
+    this.loadingStatus = LoadingStatus.finished,
+    this.accessTokenExpired = false,
+  });
+
+  factory VKState.fromJson(Map<String, dynamic> json) =>
+      _$VKStateFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VKStateToJson(this);
+
   copyWith({
-    accessToken,
-    videoQuery,
-    videos,
-    loadingStatus,
-    accessTokenExpired,
+    String accessToken,
+    String videoQuery,
+    List<VideoVM> videos,
+    LoadingStatus loadingStatus,
+    bool accessTokenExpired,
   }) =>
       VKState(
         accessToken: accessToken ?? this.accessToken,
@@ -67,9 +76,9 @@ class VKState {
       );
 }
 
-class VKBloc extends Bloc<VKEvent, VKState> {
+class VKBloc extends HydratedBloc<VKEvent, VKState> {
   @override
-  VKState get initialState => VKState();
+  VKState get initialState => super.initialState ?? VKState();
 
   @override
   Stream<VKState> mapEventToState(VKEvent event) async* {
@@ -94,7 +103,7 @@ class VKBloc extends Bloc<VKEvent, VKState> {
         yield state.copyWith(loadingStatus: LoadingStatus.started);
         var videos = await state.videoSearch.search(videoQuery);
         yield state.copyWith(
-          videos: videos,
+          videos: videos.map((v) => VideoVM.fromVKVideo(v)).toList(),
           loadingStatus: LoadingStatus.finished,
         );
       } on VKError catch (e) {
@@ -105,6 +114,24 @@ class VKBloc extends Bloc<VKEvent, VKState> {
           );
         }
       }
+    }
+  }
+
+  @override
+  VKState fromJson(Map<String, dynamic> json) {
+    try {
+      return VKState.fromJson(json);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  @override
+  Map<String, dynamic> toJson(VKState state) {
+    try {
+      return state.toJson();
+    } catch (_) {
+      return null;
     }
   }
 }

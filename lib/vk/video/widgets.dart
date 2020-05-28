@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:rptpmobile/core/blocs.dart';
+import 'package:rptpmobile/vk/video/view_models.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../blocs.dart';
 import 'models.dart';
 
 class VKVideosGrid extends StatelessWidget {
-  final List<VKVideo> videos;
+  final List<VideoVM> videos;
 
   const VKVideosGrid({Key key, this.videos}) : super(key: key);
 
@@ -31,7 +32,7 @@ class VKVideosGrid extends StatelessWidget {
 }
 
 class VKVideoCard extends StatelessWidget {
-  final VKVideo video;
+  final VideoVM video;
 
   VKVideoCard({@required this.video});
 
@@ -43,7 +44,7 @@ class VKVideoCard extends StatelessWidget {
               BlocBuilder<UIBloc, UIState>(
                 builder: (_, state) => state.kittenPreview
                     ? Image.asset("assets/kitten1.jpg")
-                    : Image.network(video.imageMoreThan600px, fit: BoxFit.fill),
+                    : Image.network(video.preview, fit: BoxFit.fill),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -55,7 +56,7 @@ class VKVideoCard extends StatelessWidget {
                         style: TextStyle(fontSize: 12),
                       ),
                     ),
-                    Chip(label: Text(video.durationString)),
+                    Chip(label: Text(video.duration)),
                   ],
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 ),
