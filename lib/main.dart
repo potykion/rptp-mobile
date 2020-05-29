@@ -43,7 +43,6 @@ class RptpApp extends StatelessWidget {
           ),
         ],
         child: MaterialApp(
-          // TODO: replace with routes
           home: BlocBuilder<UIBloc, UIState>(
             builder: (_, state) {
               switch (state.currentPage) {

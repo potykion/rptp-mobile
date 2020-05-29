@@ -6,13 +6,16 @@ part of 'blocs.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-VKState _$VKStateFromJson(Map<String, dynamic> json) {
+VKState _$VKStateFromJson(Map json) {
   return VKState(
     accessToken: json['access_token'] as String,
     videoQuery: json['video_query'] as String,
     videos: (json['videos'] as List)
-        ?.map((e) =>
-            e == null ? null : VideoVM.fromJson(e as Map<String, dynamic>))
+        ?.map((e) => e == null
+            ? null
+            : VideoVM.fromJson((e as Map)?.map(
+                (k, e) => MapEntry(k as String, e),
+              )))
         ?.toList(),
     loadingStatus:
         _$enumDecodeNullable(_$LoadingStatusEnumMap, json['loading_status']),

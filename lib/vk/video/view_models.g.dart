@@ -6,7 +6,7 @@ part of 'view_models.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-VideoVM _$VideoVMFromJson(Map<String, dynamic> json) {
+VideoVM _$VideoVMFromJson(Map json) {
   return VideoVM(
     preview: json['preview'] as String,
     title: json['title'] as String,

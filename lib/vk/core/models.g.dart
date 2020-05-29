@@ -6,7 +6,7 @@ part of 'models.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-VKError _$VKErrorFromJson(Map<String, dynamic> json) {
+VKError _$VKErrorFromJson(Map json) {
   return VKError(
     code: json['error_code'] as int,
     message: json['error_msg'] as String,
