@@ -12,9 +12,13 @@ part 'db.g.dart';
 @DataClassName("DbActress")
 class DbActresses extends Table {
   IntColumn get id => integer().autoIncrement()();
+
   TextColumn get name => text().withLength(min: 1, max: 60)();
+
   TextColumn get ptgId => text().withLength(min: 1, max: 60)();
+
   TextColumn get ptgLink => text().withLength(min: 1, max: 400)();
+
   TextColumn get ptgThumbnail => text().withLength(min: 1, max: 400)();
 }
 
@@ -46,6 +50,9 @@ class MyDatabase extends _$MyDatabase {
     var row = await customSelect(query).getSingle();
     return DbActress.fromData(row.data, this);
   }
+
+  Future<List<DbActress>> listByIds(List<String> ptgIds) =>
+      (select(dbActresses)..where((a) => a.ptgId.isIn(ptgIds))).get();
 }
 
 class ActressRepo {
@@ -61,6 +68,9 @@ class ActressRepo {
       (await db.list).map((actress) => _dbActressToActress(actress)).toList();
 
   Future<Actress> getRandom() async => _dbActressToActress(await db.getRandom);
+
+  Future<List<Actress>> listByIds(List<String> ptgIds) async =>
+      (await db.listByIds(ptgIds)).map((a) => _dbActressToActress(a)).toList();
 
   DbActressesCompanion _actressToInsertCompanion(Actress actress) =>
       DbActressesCompanion.insert(

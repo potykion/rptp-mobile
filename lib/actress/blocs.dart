@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
 import 'package:rptpmobile/actress/db.dart';
+import 'package:rptpmobile/actress/utils.dart';
 import 'package:rptpmobile/ptg/services.dart';
 import 'package:rptpmobile/ptg/view_models.dart';
 
@@ -98,8 +99,18 @@ class ActressBloc extends Bloc<ActressEvent, ActressState> {
       List<Actress> actresses = [];
       var actressLoad = AlphabetPTGActressLoad(proxyKey: state.ptgProxyKey);
       await for (var letterActress in actressLoad.actressStream) {
-        await this.actressRepo.bulkInsert(letterActress.actresses);
-        actresses.addAll(letterActress.actresses);
+        var existingActresses = await this.actressRepo.listByIds(
+              letterActress.actresses.map((a) => a.ptgId).toList(),
+            );
+
+        var notExistingActresses = NotExistingActressesFilter(
+          actressesToFilter: letterActress.actresses,
+          existingActresses: existingActresses,
+        ).filtered;
+        await this.actressRepo.bulkInsert(notExistingActresses);
+
+        actresses.addAll(existingActresses);
+        actresses.addAll(notExistingActresses);
 
         var progress = LetterProgress(letterActress.letter).letterProgress;
         yield state.copyWith(actressBaseRefreshProgress: progress);
