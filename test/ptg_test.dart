@@ -25,7 +25,7 @@ main() {
 
     var actresses = PTGThumbPageParse(body, proxy: true).parsedActresses;
 
-    expect(actresses.length, 725);
+    expect(actresses.length, 5);
   });
 
   test("PTG actress id parse from proxy url", () async {
