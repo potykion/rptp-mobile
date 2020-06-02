@@ -1,9 +1,8 @@
 # rptpmobile
 
-http://rptp.herokuapp.com/ for mobile
+Flutter app for watching random adult videos via VK API & pornteengirl.com parse
 
-## Codegen
+![](assets/1-videos.jpg) | ![](assets/2-actresses.jpg)
 
-```
-C:\Users\potyk\Downloads\flutter_windows_v1.12.13+hotfix.5-stable\flutter\bin\flutter.bat pub pub run build_runner build
-```
+Web-version: http://rptp.herokuapp.com/
+
