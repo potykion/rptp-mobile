@@ -32,7 +32,9 @@ class ActressState {
       this.lastActressDbUpdate})
       : this.ptgProxyKey = ptgProxyKey ?? DotEnv().env['PTG_PROXY_KEY'];
 
-  List<Actress> get matchingActresses => actresses
+  List<Actress> get sortedAcresses => actresses..sort((a, b) => a.name.compareTo(b.name));
+
+  List<Actress> get matchingActresses => sortedAcresses
       .where(
         (actress) => actress.name
             .toLowerCase()
@@ -98,6 +100,7 @@ class ActressBloc extends Bloc<ActressEvent, ActressState> {
 
       List<Actress> actresses = [];
       var actressLoad = AlphabetPTGActressLoad(proxyKey: state.ptgProxyKey);
+
       await for (var letterActress in actressLoad.actressStream) {
         var existingActresses = await this.actressRepo.listByIds(
               letterActress.actresses.map((a) => a.ptgId).toList(),

@@ -103,22 +103,67 @@ class ActressStats extends StatelessWidget {
               title: Text("Актрис в базе: ${state.actresses.length}"),
               subtitle:
                   Text("Последнее обновление: ${state.lastActressDbUpdateStr}"),
-              trailing: IconButton(
-                icon: Icon(Icons.autorenew),
-                onPressed: state.pageState == ActressPageState.dbRefresh
-                    ? null
-                    : () => context
-                        .bloc<ActressBloc>()
-                        .add(DbRefreshStartedEvent()),
+              trailing: DbRefreshButton(
+                isRefreshing: state.pageState == ActressPageState.dbRefresh,
               ),
             ),
-            BlocBuilder<ActressBloc, ActressState>(
-              builder: (BuildContext context, state) =>
-                  state.pageState == ActressPageState.dbRefresh
-                      ? LinearProgressIndicator(value: state.dbRefreshProgress)
-                      : Container(),
-            ),
+            state.pageState == ActressPageState.dbRefresh
+                ? LinearProgressIndicator(value: state.dbRefreshProgress)
+                : Container()
           ],
         ),
       );
+}
+
+class DbRefreshButton extends StatefulWidget {
+  final bool isRefreshing;
+
+  const DbRefreshButton({Key key, this.isRefreshing}) : super(key: key);
+
+  @override
+  _DbRefreshButtonState createState() => _DbRefreshButtonState();
+}
+
+class _DbRefreshButtonState extends State<DbRefreshButton>
+    with SingleTickerProviderStateMixin {
+  AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = new AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 1),
+    );
+  }
+
+  @override
+  void didUpdateWidget(DbRefreshButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!widget.isRefreshing) {
+      _controller.stop();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RotationTransition(
+      turns: _controller,
+      child: IconButton(
+        icon: Icon(Icons.autorenew),
+        onPressed: widget.isRefreshing
+            ? null
+            : () {
+                _controller.repeat();
+                context.bloc<ActressBloc>().add(DbRefreshStartedEvent());
+              },
+      ),
+    );
+  }
 }
